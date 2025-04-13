@@ -3,6 +3,9 @@
 Sustain Bites is a web platform that bridges the gap between **food donors** (restaurants, hostels, hotels, households) and **NGOs or individuals in need**, aiming to **minimize food wastage** and **combat hunger** in a structured and sustainable way.
 
 ---
+## [📄 View Project Pdf](docs/Pixel_Phantoms.pdf)
+
+---
 
 ## 🚀 Live Preview
 
@@ -55,23 +58,6 @@ Every day, edible surplus food is wasted due to the lack of a reliable channel b
 - ⭐ **Review System** *(Planned)*
   - Rate and review donors based on food quality and consistency
 - 📷 **Live Image Preview** when uploading food image
-
----
-
-## 📂 Folder Structure
-
-```
-ByteVerse_2025/
-├── index.html
-├── login.html
-├── signup.html
-├── dashboard.html
-├── profile.html
-├── style.css
-├── /assets
-│   └── logo, images, icons
-└── README.md
-```
 
 ---
 
