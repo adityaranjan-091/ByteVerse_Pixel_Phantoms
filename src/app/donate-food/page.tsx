@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
@@ -15,7 +15,9 @@ const DonateFoodPage = () => {
   const [formData, setFormData] = useState({
     description: "",
     quantity: "",
+    bestBeforeDate: "",
     location: "",
+    contact: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,9 @@ const DonateFoodPage = () => {
     const payload = {
       description: formData.description,
       quantity: formData.quantity,
+      bestBeforeDate: formData.bestBeforeDate,
       location: formData.location,
+      contact: formData.contact,
       userId: session?.user?.id,
     };
 
@@ -63,7 +67,13 @@ const DonateFoodPage = () => {
         throw new Error(result.message || "Failed to save food data");
       }
 
-      setFormData({ description: "", quantity: "", location: "" });
+      setFormData({
+        description: "",
+        quantity: "",
+        bestBeforeDate: "",
+        location: "",
+        contact: "",
+      });
       alert("Thank you for donating leftover food!");
     } catch (err) {
       setError(
@@ -88,15 +98,9 @@ const DonateFoodPage = () => {
             <div>
               {session ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 text-xl">
                     Hello, {session.user?.name}
                   </span>
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/login" })}
-                    className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
-                  >
-                    Logout
-                  </button>
                 </div>
               ) : (
                 <Link
@@ -160,6 +164,24 @@ const DonateFoodPage = () => {
                 </div>
                 <div>
                   <label
+                    htmlFor="bestBeforeDate"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Best Before
+                  </label>
+                  <input
+                    type="date"
+                    id="bestBeforeDate"
+                    name="bestBeforeDate"
+                    value={formData.bestBeforeDate}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="dd/mm/yyyy"
+                  />
+                </div>
+                <div>
+                  <label
                     htmlFor="location"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
@@ -176,6 +198,25 @@ const DonateFoodPage = () => {
                     placeholder="e.g., 123 Main St, City"
                   />
                 </div>
+                <div>
+                  <label
+                    htmlFor="contact"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Contact
+                  </label>
+                  <input
+                    type="text"
+                    id="contact"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="+91-123-456-7890"
+                  />
+                </div>
+
                 <div className="text-center">
                   <button
                     type="submit"
