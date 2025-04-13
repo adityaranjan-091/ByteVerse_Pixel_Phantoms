@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth"; // Corrected import
-import { authOptions } from "../auth/[...nextauth]/route"; // Adjusted relative path
+import { getServerSession } from "next-auth"; 
+import { authOptions } from "../auth/[...nextauth]/route";
 import { getDb } from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
     // Get the server session
     const session = await getServerSession(authOptions);
-    console.log("Server Session:", session); // Debug: Log session to verify
+    console.log("Server Session:", session); 
 
     // Check if session and user ID exist
     if (!session || !session.user || !session.user.id) {
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       bestBeforeDate,
       location,
       contact,
-      userId: userId, // Use the userId from the request body
+      userId: userId, 
       createdAt: new Date(),
     });
 
