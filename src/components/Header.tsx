@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 
 interface NavLink {
   href: string;
@@ -12,16 +13,25 @@ interface NavLink {
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data: session } = useSession(); // Check the session status
 
   const navLinks: NavLink[] = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/volunteer", label: "Volunteer" },
-    { href: "/login", label: "Login", highlight: true },
+    {
+      href: session ? "/profile" : "/login",
+      label: session ? "Profile" : "Login",
+      highlight: true,
+    },
   ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" }); // Redirect to home after logout
   };
 
   return (
@@ -64,6 +74,16 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
               ))}
+              {session && (
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition duration-300"
+                  >
+                    Logout
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -102,6 +122,16 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
               ))}
+              {session && (
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition duration-300"
+                  >
+                    Logout
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         )}
