@@ -2,16 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { useSession, signOut } from "next-auth/react";
+import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import L from "leaflet"; // Import Leaflet for custom fixes (e.g., icon issue)
+
+// Fix default Leaflet icon issue (required for Next.js)
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+const DefaultIcon = L.icon({
+  iconUrl: icon.src,
+  shadowUrl: iconShadow.src,
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
 interface FoodEntry {
   _id: string;
   description: string;
   quantity: string;
+  bestBeforeDate: string;
   location: string;
+  contact: string;
   createdAt: string;
   userId: string;
 }
@@ -43,30 +56,6 @@ const FoodMapPage = () => {
     fetchFoodData();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this food entry?")) return;
-
-    try {
-      const response = await fetch("/api/delete-food", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to delete food entry");
-      }
-
-      setFoodData((prev) => prev.filter((entry) => entry._id !== id));
-      alert("Food entry deleted successfully!");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to delete food entry"
-      );
-    }
-  };
-
   const randomPosition: [number, number] = [25.6027981, 85.1584541];
 
   return (
@@ -80,18 +69,16 @@ const FoodMapPage = () => {
             </h1>
             <div>
               {status === "loading" ? (
-                <p>Loading...</p>
+                <div className="min-h-screen bg-gradient-to-r from-green-50 to-green-100">
+                  <p className="text-lg font-semibold text-green-700 animate-pulse">
+                    Loading...
+                  </p>
+                </div>
               ) : session ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-gray-700 font-medium">
-                    Hello, {session.user?.name}
+                  <span className="text-gray-700 font-medium text-xl">
+                    Hello, {session.user?.name || "User"}
                   </span>
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/login" })}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
-                  >
-                    Logout
-                  </button>
                 </div>
               ) : (
                 <Link
@@ -104,7 +91,7 @@ const FoodMapPage = () => {
             </div>
           </div>
 
-          {/* Table Section (Now comes first) */}
+          {/* Table Section */}
           <div className="mb-12">
             <h2 className="text-2xl font-semibold text-green-700 mb-4">
               Available Leftover Food
@@ -127,7 +114,8 @@ const FoodMapPage = () => {
                       <th className="p-4 text-left">Quantity</th>
                       <th className="p-4 text-left">Location</th>
                       <th className="p-4 text-left">Date Added</th>
-                      <th className="p-4 text-left">Actions</th>
+                      <th className="p-4 text-left">Best Before</th>
+                      <th className="p-4 text-left">Contact</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -139,19 +127,12 @@ const FoodMapPage = () => {
                         <td className="p-4">{entry.description}</td>
                         <td className="p-4">{entry.quantity}</td>
                         <td className="p-4">{entry.location}</td>
+
                         <td className="p-4">
                           {new Date(entry.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="p-4">
-                          {session?.user?.id === entry.userId && (
-                            <button
-                              onClick={() => handleDelete(entry._id)}
-                              className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
-                            >
-                              Delete
-                            </button>
-                          )}
-                        </td>
+                        <td className="p-4">{entry.bestBeforeDate}</td>
+                        <td className="p-4">{entry.contact}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -160,7 +141,7 @@ const FoodMapPage = () => {
             )}
           </div>
 
-          {/* Map Section (Moved down) */}
+          {/* Map Section */}
           <div>
             <h2 className="text-2xl font-semibold text-green-700 mb-4">
               Food Donation Map
@@ -175,9 +156,23 @@ const FoodMapPage = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              <Marker position={randomPosition}>
-                <Popup>Sample Food Donation Location</Popup>
-              </Marker>
+              {foodData.length > 0 &&
+                foodData.map((entry) => (
+                  <Marker key={entry._id} position={randomPosition}>
+                    <Popup>
+                      <div>
+                        <strong>{entry.description}</strong>
+                        <br />
+                        Quantity: {entry.quantity}
+                        <br />
+                        Location: {entry.location}
+                        <br />
+                        Added: {new Date(entry.createdAt).toLocaleDateString()}
+                        <br />
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
             </MapContainer>
           </div>
         </div>

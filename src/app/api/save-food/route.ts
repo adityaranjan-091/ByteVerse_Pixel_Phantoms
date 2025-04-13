@@ -20,10 +20,18 @@ export async function POST(req: NextRequest) {
     // Parse the request body as JSON (matching client-side fetch)
     const body = await req.json();
     console.log("Request Body:", body); // Debug: Log the incoming request body
-    const { description, quantity, location, userId } = body;
+    const { description, quantity, bestBeforeDate, location, contact, userId } =
+      body;
 
     // Validate required fields
-    if (!description || !quantity || !location || !userId) {
+    if (
+      !description ||
+      !quantity ||
+      !bestBeforeDate ||
+      !location ||
+      !contact ||
+      !userId
+    ) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
@@ -36,7 +44,9 @@ export async function POST(req: NextRequest) {
     const result = await collection.insertOne({
       description,
       quantity,
+      bestBeforeDate,
       location,
+      contact,
       userId: userId, // Use the userId from the request body
       createdAt: new Date(),
     });
