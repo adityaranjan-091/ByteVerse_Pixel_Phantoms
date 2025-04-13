@@ -4,12 +4,13 @@ Sustain Bites is a web platform that bridges the gap between **food donors** (re
 
 ---
 ## [📄 View Project Pdf](docs/Pixel_Phantoms.pdf)
+## [Click here to view the video](https://drive.google.com/file/d/1IgNHhcIgq75fi2hKJn2rNFrQ9NnsF96K/view?usp=drivesdk)
 
 ---
 
 ## 🚀 Live Preview
 
-> Coming Soon... *(Deploy via Vercel, Netlify, or GitHub Pages)*
+> https://nextjs-boilerplate-pi-nine-85.vercel.app/
 
 ---
 
@@ -61,10 +62,27 @@ Every day, edible surplus food is wasted due to the lack of a reliable channel b
 
 ---
 
+## 🧪 How to Use
+
+Follow the steps below to set up and run the project locally (frontend + backend):
+
+### 1️⃣ Clone the Repository
+git clone https://github.com/adityaranjan-091/ByteVerse_Pixel_Phantoms.git cd ByteVerse_Pixel_Phantoms
+---
+
+### 2️⃣ Install Dependencies
+npm install
+---
+
+### 3️⃣ Run the Development Server
+npm run dev
+
+Open the app in your browser at:
+http://localhost:3000
+
 ## 🔮 Future Enhancements
 
-- ✅ Add backend for real-time data and authentication
-- ✅ Enable profile picture uploads and editing
+- ✅ Enable profile page section
 - ✅ Implement role-based dashboard switching (Donor/NGO)
 - ✅ Add notification system for donation acceptance
 - ✅ Location-based filtering & map integration
@@ -75,11 +93,11 @@ Every day, edible surplus food is wasted due to the lack of a reliable channel b
 ## 🤝 Team
 
 👨‍💻 Developed with passion during **ByteVerse 2025 Hackathon**  
-Built by: [Aditya Ranjan](https://github.com/adityaranjan-091)
-          [Alok Kumar Chaudhary](https://github.com/Xzen123)
-          [Aryan Binani](https://github.com/Aryann009)
+Built by: [Aditya Ranjan](https://github.com/adityaranjan-091),
+          [Alok Kumar Chaudhary](https://github.com/Xzen123),
+          [Aryan Binani](https://github.com/Aryann009),
           [Hans Raj](https://github.com/ThusSpokeSwan)
 
 ---
 
-> 🌍 "Save food. Serve lives. Sustain the planet." — Sustain Bite
+## > 🌍 "Save food. Serve lives. Sustain the planet." — Sustain Bite
