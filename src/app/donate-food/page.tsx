@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
@@ -11,22 +10,25 @@ import Footer from "@/components/Footer";
 const DonateFoodPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  console.log("Client Session:", session);
+
   const [formData, setFormData] = useState({
     description: "",
     quantity: "",
     location: "",
-    image: null as File | null,
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (status === "authenticated") return;
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
   if (status === "loading") {
     return <p>Loading...</p>;
-  }
-  if (!session) {
-    router.push("/login");
-    return null;
   }
 
   const handleChange = (
@@ -37,27 +39,23 @@ const DonateFoodPage = () => {
     setError(null);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      setFormData((prev) => ({ ...prev, image: file }));
-      setImagePreview(URL.createObjectURL(file));
-    } else {
-      setFormData((prev) => ({ ...prev, image: null }));
-      setImagePreview(null);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    const payload = {
+      description: formData.description,
+      quantity: formData.quantity,
+      location: formData.location,
+      userId: session?.user?.id,
+    };
+
     try {
       const response = await fetch("/api/save-food", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -65,8 +63,7 @@ const DonateFoodPage = () => {
         throw new Error(result.message || "Failed to save food data");
       }
 
-      setFormData({ description: "", quantity: "", location: "", image: null });
-      setImagePreview(null);
+      setFormData({ description: "", quantity: "", location: "" });
       alert("Thank you for donating leftover food!");
     } catch (err) {
       setError(
@@ -82,7 +79,6 @@ const DonateFoodPage = () => {
   return (
     <>
       <Header />
-
       <div className="min-h-screen bg-gradient-to-r from-green-50 to-green-100 py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
@@ -112,7 +108,6 @@ const DonateFoodPage = () => {
               )}
             </div>
           </div>
-
           <section className="py-12">
             <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-2xl md:text-3xl font-semibold text-green-700 mb-6 text-center">
@@ -181,33 +176,6 @@ const DonateFoodPage = () => {
                     placeholder="e.g., 123 Main St, City"
                   />
                 </div>
-                <div>
-                  <label
-                    htmlFor="image"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Upload Food Image (optional)
-                  </label>
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                  />
-                  {imagePreview && (
-                    <div className="mt-4">
-                      <Image
-                        src={imagePreview}
-                        height={200}
-                        width={200}
-                        alt="Food Image Preview"
-                        className="max-w-full h-auto rounded-md border"
-                      />
-                    </div>
-                  )}
-                </div>
                 <div className="text-center">
                   <button
                     type="submit"
@@ -224,7 +192,6 @@ const DonateFoodPage = () => {
           </section>
         </div>
       </div>
-
       <Footer />
     </>
   );
