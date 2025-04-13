@@ -56,6 +56,11 @@ const FoodMapPage = () => {
     fetchFoodData();
   }, []);
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 242bd2e33830832eef95959a4091efd95ca86ae2
   const randomPosition: [number, number] = [25.6027981, 85.1584541];
 
   return (
@@ -169,6 +174,10 @@ const FoodMapPage = () => {
                         <br />
                         Added: {new Date(entry.createdAt).toLocaleDateString()}
                         <br />
+<<<<<<< HEAD
+=======
+                        
+>>>>>>> 242bd2e33830832eef95959a4091efd95ca86ae2
                       </div>
                     </Popup>
                   </Marker>
