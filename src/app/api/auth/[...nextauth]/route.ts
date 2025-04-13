@@ -1,19 +1,18 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { getDb } from '@/lib/mongodb';
-import bcrypt from 'bcrypt';
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { getDb } from "@/lib/mongodb";
+import bcrypt from "bcrypt";
 
-import { Session } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import { Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
   }
 }
 
-
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: {
       id: string;
@@ -26,54 +25,71 @@ declare module 'next-auth' {
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        const db = await getDb();
-        const user = await db.collection('users').findOne({ email: credentials.email });
+        try {
+          const db = await getDb();
+          const user = await db
+            .collection("users")
+            .findOne({ email: credentials.email });
 
-        if (!user) {
+          if (!user) {
+            return null;
+          }
+
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (!isValid) {
+            return null;
+          }
+
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          console.error("Error during authentication:", error);
           return null;
         }
-
-        const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-        if (!passwordMatch) {
-          return null;
-        }
-
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-        };
       },
     }),
   ],
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   session: {
-    strategy: 'jwt' as const,
+    strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: { id: string; email?: string | null; name?: string | null } }) {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT;
+      user?: { id: string; email?: string | null; name?: string | null };
+    }) {
       if (user) {
-        token.id = user.id; // Assign user ID to token
+        token.id = user.id;
       }
-      return token; // Ensure token is returned
+      return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token.id) {
-        session.user.id = token.id; // Assign token ID to session user
+        session.user.id = token.id;
       }
-      return session; // Ensure session is returned
+      return session;
     },
   },
 };
