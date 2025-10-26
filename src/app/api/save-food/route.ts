@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth"; 
-import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { getDb } from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
     // Get the server session
     const session = await getServerSession(authOptions);
-    console.log("Server Session:", session); 
 
     // Check if session and user ID exist
     if (!session || !session.user || !session.user.id) {
@@ -19,21 +18,29 @@ export async function POST(req: NextRequest) {
 
     // Parse the request body as JSON (matching client-side fetch)
     const body = await req.json();
-    console.log("Request Body:", body); // Debug: Log the incoming request body
-    const { description, quantity, bestBeforeDate, location, contact, userId } =
+    const { description, quantity, bestBeforeDate, location, contact } =
       body;
 
-    // Validate required fields
+    // Validate required fields and types
     if (
       !description ||
+      typeof description !== "string" ||
       !quantity ||
+      typeof quantity !== "number" ||
       !bestBeforeDate ||
+      typeof bestBeforeDate !== "string" ||
+      isNaN(Date.parse(bestBeforeDate)) ||
       !location ||
+      typeof location !== "object" ||
+      !location.latitude ||
+      typeof location.latitude !== "number" ||
+      !location.longitude ||
+      typeof location.longitude !== "number" ||
       !contact ||
-      !userId
+      typeof contact !== "string"
     ) {
       return NextResponse.json(
-        { message: "Missing required fields" },
+        { message: "Invalid or missing required fields" },
         { status: 400 }
       );
     }
@@ -44,10 +51,10 @@ export async function POST(req: NextRequest) {
     const result = await collection.insertOne({
       description,
       quantity,
-      bestBeforeDate,
+      bestBeforeDate: new Date(bestBeforeDate),
       location,
       contact,
-      userId: userId, 
+      userId: session.user.id,
       createdAt: new Date(),
     });
 
