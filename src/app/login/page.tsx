@@ -62,7 +62,7 @@ const LoginPage = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl blur-lg opacity-30"></div>
                 <Image
-                  src="/logo.jpg"
+                  src="/Logo.jpg"
                   alt="SustainBite Logo"
                   width={64}
                   height={64}

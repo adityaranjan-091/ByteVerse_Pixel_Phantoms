@@ -78,7 +78,7 @@ const Header: React.FC = () => {
           >
             <div className="relative">
               <Image
-                src="/logo.jpg"
+                src="/Logo.jpg"
                 alt="SustainBite Logo"
                 height={64}
                 width={64}
