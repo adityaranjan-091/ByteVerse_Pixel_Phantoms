@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'SustainBite',
   description: 'Food rescue platform',
   icons: {
-    icon: '/Logo.jpg', // or '/favicon.png', '/favicon.svg'
+    icon: '/Logo.jpg',
   },
 };
 
