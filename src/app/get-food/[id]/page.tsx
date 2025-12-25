@@ -98,7 +98,7 @@ const FoodDetailsPage = () => {
           <p className="text-gray-600">
             The requested food item could not be found.
           </p>
-          <Link href="/get-food" className="mt-6 inline-block bg-gray-600 text-white px-6 py-3 rounded-full hover:bg-gray-700 transition-colors">
+          <Link href="/available" className="mt-6 inline-block bg-gray-600 text-white px-6 py-3 rounded-full hover:bg-gray-700 transition-colors">
               Back to list
           </Link>
         </div>

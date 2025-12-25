@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import bcrypt from "bcrypt";
+import { User } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     }
 
     const db = await getDb();
-    const existingUser = await db.collection("users").findOne({ email });
+    const existingUser = await db.collection<User>("users").findOne({ email });
     if (existingUser) {
       return NextResponse.json(
         { message: "Email already exists" },
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await db.collection("users").insertOne({
+    await db.collection<User>("users").insertOne({
       email,
       password: hashedPassword,
       name,

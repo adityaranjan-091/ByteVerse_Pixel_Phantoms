@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SessionProvider } from "next-auth/react"; // Import SessionProvider
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({
   children,
@@ -20,7 +20,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased font-sans">
         <SessionProvider>
           {shouldShowHeaderFooter && <Header />}
           {children}

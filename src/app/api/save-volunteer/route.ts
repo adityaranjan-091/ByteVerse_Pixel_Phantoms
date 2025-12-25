@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
+import { Volunteer } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     const db = await getDb();
-    const collection = db.collection("volunteers");
+    const collection = db.collection<Volunteer>("volunteers");
     await collection.insertOne({
       name,
       email,

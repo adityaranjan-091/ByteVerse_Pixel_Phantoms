@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { NextAuthOptions } from "next-auth";
+import { User } from "@/lib/types";
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -37,10 +38,10 @@ export const authOptions: NextAuthOptions = {
         try {
           const db = await getDb();
           const user = await db
-            .collection("users")
+            .collection<User>("users")
             .findOne({ email: credentials.email });
 
-          if (!user) {
+          if (!user || !user.password) {
             return null;
           }
 

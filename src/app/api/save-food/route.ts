@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDb } from "@/lib/mongodb";
+import { LeftoverFood } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,8 +19,7 @@ export async function POST(req: NextRequest) {
 
     // Parse the request body as JSON (matching client-side fetch)
     const body = await req.json();
-    const { description, quantity, bestBeforeDate, location, contact } =
-      body;
+    const { description, quantity, bestBeforeDate, location, contact } = body;
 
     // Validate required fields and types
     if (
@@ -31,11 +31,7 @@ export async function POST(req: NextRequest) {
       typeof bestBeforeDate !== "string" ||
       isNaN(Date.parse(bestBeforeDate)) ||
       !location ||
-      typeof location !== "object" ||
-      !location.latitude ||
-      typeof location.latitude !== "number" ||
-      !location.longitude ||
-      typeof location.longitude !== "number" ||
+      typeof location !== "string" ||
       !contact ||
       typeof contact !== "string"
     ) {
@@ -47,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     // Connect to the database and insert data
     const db = await getDb();
-    const collection = db.collection("leftover_food");
+    const collection = db.collection<LeftoverFood>("leftover_food");
     const result = await collection.insertOne({
       description,
       quantity,
