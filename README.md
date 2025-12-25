@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/public/logo.jpg" alt="SustainBite Logo" width="120" height="120">
+  <img src="/public/Logo.jpg" alt="SustainBite Logo" width="120" height="120">
   
   # 🌱 SustainBite
   
