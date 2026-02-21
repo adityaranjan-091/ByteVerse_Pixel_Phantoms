@@ -18,7 +18,7 @@ const SignupPage = () => {
   // Password strength indicators
   const getPasswordStrength = (pwd: string) => {
     if (pwd.length === 0) return { strength: 0, label: "" };
-    if (pwd.length < 6)
+    if (pwd.length < 8)
       return { strength: 1, label: "Weak", color: "bg-red-500" };
     if (pwd.length < 10)
       return { strength: 2, label: "Fair", color: "bg-yellow-500" };
@@ -42,8 +42,8 @@ const SignupPage = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
       setIsLoading(false);
       return;
     }
@@ -242,7 +242,7 @@ const SignupPage = () => {
                   disabled={isLoading}
                   className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   required
-                  minLength={6}
+                  minLength={8}
                   aria-required="true"
                   aria-describedby="password-strength"
                 />
@@ -269,13 +269,12 @@ const SignupPage = () => {
                       Password strength:
                     </span>
                     <span
-                      className={`text-xs font-bold ${
-                        passwordStrength.strength === 3
+                      className={`text-xs font-bold ${passwordStrength.strength === 3
                           ? "text-emerald-600"
                           : passwordStrength.strength === 2
-                          ? "text-yellow-600"
-                          : "text-red-600"
-                      }`}
+                            ? "text-yellow-600"
+                            : "text-red-600"
+                        }`}
                     >
                       {passwordStrength.label}
                     </span>
@@ -284,16 +283,15 @@ const SignupPage = () => {
                     {[1, 2, 3].map((level) => (
                       <div
                         key={level}
-                        className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                          level <= passwordStrength.strength
+                        className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength.strength
                             ? passwordStrength.color
                             : "bg-gray-200"
-                        }`}
+                          }`}
                       />
                     ))}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Use 10+ characters with uppercase, numbers for best security
+                    Use 8+ characters with uppercase and numbers for best security
                   </p>
                 </div>
               )}
