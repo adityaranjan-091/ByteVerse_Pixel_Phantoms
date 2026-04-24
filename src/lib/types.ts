@@ -34,6 +34,6 @@ export interface LeftoverFood {
   bestBeforeDate: Date;
   location: string;
   contact: string;
-  userId: string; // References User._id
+  userId: string;
   createdAt: Date;
 }
